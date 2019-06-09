@@ -1,21 +1,22 @@
+import { CHANG_INPUT_VALUE, ADD_TODO_ITEM, DELETE_TODO_ITEM } from './actionTypes';
 const defaultState = {
     inputValue: '',
     list: []
 }
 
 export default (state = defaultState, action) => {
-    if(action.type === 'change_input_value') {
+    if(action.type === CHANG_INPUT_VALUE) {
         return Object.assign({}, state, {
             inputValue: action.inputValue
         });
     }
-    if(action.type === 'add_todo_item') {
+    if(action.type === ADD_TODO_ITEM) {
         return Object.assign({}, state, {
             inputValue: '',
             list: [...state.list, state.inputValue]
         });
     }
-    if(action.type === 'delete_todo_item') {
+    if(action.type === DELETE_TODO_ITEM) {
         let copyList = [...state.list];
         copyList.splice(action.index, 1);
         
