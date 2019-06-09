@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TodoListUI from './TodoListUI';
 import store from './store';
-import { getChangeInputValueAction, getAddTodoItemAction, getDeleteTodoItemAction } from './store/actionCreators'
+import { getInitList, getChangeInputValueAction, getAddTodoItemAction, getDeleteTodoItemAction } from './store/actionCreators'
 
 
 class TodoList extends Component {
@@ -30,12 +30,21 @@ class TodoList extends Component {
         );
     }
 
+    componentDidMount() {
+        const action = getInitList();
+        // store 发现是函数，会将其执行
+        store.dispatch(action);
+    }
+
     handleInputChange(e) {
         const action = getChangeInputValueAction(e.target.value);
         store.dispatch(action);
     }
 
     handleButtonClick() {
+        if(this.state.inputValue === '') {
+            return;
+        }
         const action = getAddTodoItemAction();
         store.dispatch(action);
     }
