@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import TodoListUI from './TodoListUI';
 import store from './store';
-import { getInitList, getChangeInputValueAction, getAddTodoItemAction, getDeleteTodoItemAction } from './store/actionCreators'
-
+import { getGetInitListAction, getChangeInputValueAction, getAddTodoItemAction, getDeleteTodoItemAction } from './store/actionCreators';
 
 class TodoList extends Component {
 
@@ -31,9 +30,21 @@ class TodoList extends Component {
     }
 
     componentDidMount() {
-        const action = getInitList();
-        // store 发现是函数，会将其执行
-        store.dispatch(action);
+        const action = getGetInitListAction();
+        store.dispatch(action);     //（多了一个 action ）此时传入的是，getInitList 是要去获取数据的 action ，而不是 initList 去初始化列表的 action
+        /**
+         * 原始 ajax 请求
+         */
+        // axios.get('/api/get/list').then((res) => {
+        //     const action = getInitListAction(res.data);
+        //     store.dispatch(action);
+        // })
+        /**
+         * redux thunk
+         */
+        // const action = getInitList();
+        // // store 发现是函数，会将其执行
+        // store.dispatch(action);
     }
 
     handleInputChange(e) {
