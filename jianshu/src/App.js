@@ -1,12 +1,17 @@
-import React, { Fragment } from 'react';
-import { GlobalStyle } from './style.js';
+import React from 'react';
+import { Provider } from 'react-redux';
+import GlobalStyle from './style.js';
+import IconfontGlobalStyle from './statics/iconfont/iconfont';
+import Header from './common/header';
+import store from './store';
 
 function App() {
   return (
-    <Fragment>
+    <Provider store={store}>
       <GlobalStyle />
-      Hello World!
-    </Fragment>
+      <IconfontGlobalStyle />
+      <Header />
+    </Provider>
   );
 }
 

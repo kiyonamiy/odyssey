@@ -2,7 +2,7 @@
 import { createGlobalStyle } from 'styled-components';
 
 //不同浏览器的默认样式可能不同。这里使他们全局统一
-export const GlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle`
 /* http://meyerweb.com/eric/tools/css/reset/
    v2.0-modified | 20110126
    License: none (public domain)
@@ -370,3 +370,5 @@ textarea {
     padding: 0.2em 0;
 }
 `;
+
+export default GlobalStyle;
