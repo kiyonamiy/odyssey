@@ -1,3 +1,11 @@
-export const NAV_SEARCH_FOCUS = 'header/nav_search_focus';
+export const NAV_SEARCH_FOCUS = 'header/NAV_SEARCH_FOCUS';
 
-export const NAV_SEARCH_BLUR = 'header/nav_search_blur';
+export const NAV_SEARCH_BLUR = 'header/NAV_SEARCH_BLUR';
+
+export const CHANGE_SEARCH_INFO_LIST = 'header/CHANGE_SEARCH_INFO_LIST';
+
+export const SEARCH_INFO_MOUSE_ENTER = 'header/SEARCH_INFO_MOUSE_ENTER';
+
+export const SEARCH_INFO_MOUSE_LEAVE = 'header/SEARCH_INFO_MOUSE_LEAVE';
+
+export const SEARCH_INFO_SWITCH_CLICK = 'header/SEARCH_INFO_SWITCH_CLICK';

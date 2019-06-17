@@ -2,16 +2,31 @@ import * as constants from './constants';
 import { fromJS } from 'immutable';
 
 const defaultState = fromJS({
-    focused: false
+    focused: false,
+    mouseIn: false,
+    list: [],
+    page: 0,
+    totalPage: 1
 });
 
 export default (state = defaultState, action) => {
-    if(action.type === constants.NAV_SEARCH_FOCUS) {
-        // immutable 对象的 set 方法，会结合之前的 immutable 对象的值和设置的值，返回一个全新的对象（依然为 immutable）
-        return state.set('focused', true);
+    switch(action.type) {
+        case constants.NAV_SEARCH_FOCUS:
+            return state.set('focused', true);
+        case constants.NAV_SEARCH_BLUR:
+            return state.set('focused', false);
+        case constants.CHANGE_SEARCH_INFO_LIST:
+            return state.merge({
+                list: action.data,
+                totalPage: action.totalPage
+            });
+        case constants.SEARCH_INFO_MOUSE_ENTER:
+            return state.set('mouseIn', true);
+        case constants.SEARCH_INFO_MOUSE_LEAVE:
+            return state.set('mouseIn', false);
+        case constants.SEARCH_INFO_SWITCH_CLICK:
+            return state.set('page', action.page);
+        default:
+            return state;
     }
-    if(action.type === constants.NAV_SEARCH_BLUR) {
-        return state.set('focused', false);
-    }
-    return state;
 }
