@@ -4,12 +4,12 @@ const { loginCheck } = require('../controller/user');
 const userRouterHandle = (req, res) => {
     if(req.method === 'POST' && req.path === '/api/user/login') {
         const { username, password } = req.body;
-        const result = loginCheck(username, password);
-        if(result) {
-            return new SuccessModel();
-        } else {
-            return new ErrorModel("账号或者密码错误");
-        }
+        return loginCheck(username, password).then(data => {
+            if(data.username) {
+                return new SuccessModel();
+            }
+            return new ErrorModel('登录失败');
+        })
     }
 }
 

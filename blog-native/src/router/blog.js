@@ -10,36 +10,37 @@ const blogRouterHandle = (req, res) => {
     if(method === 'GET' && path === '/api/blog/list') {
         const author = req.query.author || '';
         const keyword = req.query.keyword || '';
-        const listData = getList(author, keyword);
+        const result = getList(author, keyword);
 
-        return new SuccessModel(listData);
+        //返回的也是一个 promise
+        return result.then(rowDataPacket => {
+            return new SuccessModel(rowDataPacket);
+        })
     }
     if(method === 'GET' && path === '/api/blog/detail') {
-        const data = getDetail(id);
-
-        return new SuccessModel(data);
+        return getDetail(id).then(oneBlog => new SuccessModel(oneBlog));
     }
     if(method === 'POST' && path === '/api/blog/new') {
-        const blogData = req.body;
-        const blogId = newBlog(req.body);
-
-        return new SuccessModel(blogId);
+        req.body.author = "假数据";
+        req.body.createtime = Date.now();
+        return newBlog(req.body).then(insertId => new SuccessModel(insertId));
     }
     if(method === 'POST' && path === '/api/blog/update') {
-        const result = updateBlog(id, req.body);
-        if(result) {
-            return new SuccessModel();
-        } else {
+        return updateBlog(id, req.body).then(result => {
+            if(result) {
+                return new SuccessModel();
+            }
             return new ErrorModel('更新博客失败');
-        }
+        });
     }
     if(method === 'POST' && path === '/api/blog/del') {
-        const result = delBlog(id);
-        if(result) {
-            return new SuccessModel();
-        } else {
+        const author = '假数据';
+        return delBlog(id, author).then(result => {
+            if(result) {
+                return new SuccessModel();
+            }
             return new ErrorModel('删除博客失败');
-        }
+        });
     }
 }
 

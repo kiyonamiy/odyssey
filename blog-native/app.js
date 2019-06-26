@@ -35,19 +35,19 @@ const serverHandle = (req, res) => {
         req.body = postData;                // 只有 post 方法才使用 req.body 对 get 无影响
 
         // 处理 blog 路由
-        const blogData = blogRouterHandle(req, res);
-        if(blogData) {
-            res.end(
-                JSON.stringify(blogData)
-            )
+        const blogResult = blogRouterHandle(req, res);  //!!! 通过打印，整个过程 blogResult = Promise { <pending> } 说明是交给另一个线程处理（主线程全程不管，也不使用）。
+        if(blogResult) {
+            blogResult.then(blogData => {
+                res.end(JSON.stringify(blogData))
+            })
             return;
         }
         //处理 user 路由
-        const userData = userRouterHandle(req, res);
-        if(userData) {
-            res.end(
-                JSON.stringify(userData)
-            )
+        const userResult = userRouterHandle(req, res);
+        if(userResult) {                    //因为可能不在整个路由内匹配，所以 promise 可能为空
+            userResult.then(userData => {
+                res.end(JSON.stringify(userData))
+            });
             return;
         }
         //未命中路由，返回 404
