@@ -1,12 +1,12 @@
 const { exec } = require('../db/mysql');
 
-const loginCheck = (username, password) => {
+const login = (username, password) => {
     let sql = `select username, realname from users where username='${username}' and password='${password}'`;
     return exec(sql).then(rowDataPacket => rowDataPacket[0] || {});
 }
 
 module.exports = {
-    loginCheck,
+    login,
 }
 
 /**
