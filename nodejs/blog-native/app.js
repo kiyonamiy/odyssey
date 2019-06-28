@@ -2,6 +2,7 @@ const querystring = require('querystring');
 const blogRouterHandle = require('./src/router/blog');
 const userRouterHandle = require('./src/router/user');
 const redis = require('./src/db/redis');
+const log = require('./src/utils/log');
 
 // session 数据 （全局的 所有的 req 的 userid 都存储在此
 // const SESSION_DATA = {};
@@ -36,6 +37,8 @@ const getPostData = (req) => new Promise((resolve, reject) => {
 });
 
 const serverHandle = (req, res) => {
+    //日志记录
+    log.access(`${req.method} --- ${req.url} --- ${req.headers['user-agent']} --- ${new Date().toLocaleString()}`);
     // 设置返回格式 JSON
     res.setHeader('Content-type', 'application/json');
 

@@ -4,7 +4,7 @@ const { getList, getDetail, newBlog, updateBlog, delBlog } = require('../control
 
 // 统一的登录验证函数
 const loginCheck = req => {
-    if(!req.session.username) {
+    if(!req.session.username) {     // 其实完全没必要这么验证阿？不应该只是没有 userid 就不继续了吗。登录成功再给 cookie 赋值 userid 不就行了嘛
         return Promise.resolve(new ErrorModel('尚未登录'));
     }
 }
