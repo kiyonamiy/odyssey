@@ -20,5 +20,6 @@ const exec = sql => new Promise((resolve, reject) => {
 })
 
 module.exports = {
-    exec
+    exec,
+    escape: mysql.escape
 }
