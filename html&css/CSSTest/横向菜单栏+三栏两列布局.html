@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    /*包一层最外层，限制宽度*/
+    #layout {
+        width: 800px;
+        margin: 0 auto;
+    }
+    /*导航栏*/
+    #navigator {
+        background: red;
+        zoom: 1;
+        /*清楚 ul 本身的样式*/
+        padding: 0;
+        margin: 0;
+    }
+    #navigator li {     /*后代选择器*/
+        float: left;
+        border: solid 1px pink;
+        padding: 5px 10px;
+        list-style-type: none;  /* 去掉列表项的点 */
+    }
+    /*左侧导航栏*/
+    #left-side {
+        background: yellow;
+        height: 400px;
+        width: 200px;
+        float: left;
+    }
+    /*右侧内容栏*/
+    #content {
+        background: green;
+        height: 400px;
+        width: 600px;
+        float: right;
+    }
+    /*底部*/
+    #footer {
+        background: blue;
+    }
+    /* 抽离清楚浮动做单独类使用，无需每个id写相同的清楚浮动样式 */
+    .clearfix::after {
+        clear: both;
+        display: block; /*必须{!!!}否则无效果*/
+        content: '';    /*必须{!!!}否则无效果*/
+    }
+</style>
+<body>
+    <div id="layout">
+        <div id="header">
+            <ul id="navigator" class="clearfix">
+                <li>政治</li>
+                <li>地理</li>
+                <li>历史</li>
+                <li>游戏</li>
+            </ul>
+        </div>
+        <div id="main" class="clearfix">
+            <div id="left-side">left-side</div>
+            <div id="content">content</div>
+        </div>
+        <div id="footer">footer</div>
+    </div>
+</body>
+</html>

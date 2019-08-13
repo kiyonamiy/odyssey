@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        /**
+        width height 只针对于 content 而言
+        **/
+        /* 测试结果：
+        左浮动元素 使用 margin-right: 20px;
+        右浮动元素 使用 margin-left: 10px;
+        二者最后的间距 20 + 10 = 30px
+        如果一行容不下，.rule2 另起一行
+        */
+        .box { 
+            background: #00ff90; 
+            width: 530px; 
+            height: 400px;
+        }
+        .rule1 { 
+            float: left; 
+            margin-right: 20px; 
+            background: #ff6a00; 
+            width: 250px; 
+        }
+        .rule2 { 
+            float: right; 
+            margin-left: 10px; 
+            background: #ff6a00; 
+            width: 250px; 
+        }
+
+        /* 测试结果：
+        上 div 使用 margin-bottom: 20px; 
+        下 div 使用 margin-top: 10px;
+        最后二者的间距为 20px （取大值），而不是 20 + 10 = 30px
+
+        如果有负值：则是二者相加的结果
+        例如 下 div 使用 margin-top: -10px;
+        最后二者的间距为 20 + (-10) = 10px
+        */
+        /* .box {
+            background: #00ff90;
+            height: 220px;
+            padding: 0 20px;
+        }
+        .rule1 {
+            margin-bottom: 20px;
+            background: #ff6a00; 
+            height: 100px;
+        }
+        .rule2 {
+            margin-top: 20px;
+            background: #ff6a00;
+            height: 100px;
+        } */
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="rule1">
+            浮动元素1
+        </div>
+        <div></div>
+        <div class="rule2">
+            浮动元素2
+        </div>
+    </div>
+</body>
+</html>
