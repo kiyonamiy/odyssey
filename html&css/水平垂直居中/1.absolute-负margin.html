@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>absolute + 负margin</title>
+    <link rel="stylesheet" href="common.css">
+    <style>
+        .wp {
+            position: relative;
+        }
+        .box {
+            position: absolute;
+            /* 以左上角为标准点 */
+            top: 50%;
+            left: 50%;
+            /* box 的长宽各为 100px 回来一半 */
+            /* 这种方法有一个很明显的不足，就是需要提前知道元素的尺寸。*/
+            margin-left: -50px;
+            margin-top: -50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wp">
+        <div class="box size">定高宽</div>
+    </div>
+</body>
+</html>
