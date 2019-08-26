@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        /*铺满屏幕*/
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        #canvas {
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        /* 1. 初始化 Canvas */
+        const WIDTH = document.documentElement.clientWidth;
+        const HEIGHT = document.documentElement.clientHeight;
+        // 拿到 canvas
+        const canvas = document.getElementById("canvas");
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
+        // 拿到 canvas 上下文
+        const canvasCtx = canvas.getContext("2d");
+
+        /* 2. 初始化产生圆的配置 */
+        const BASIC_HUE = Math.random() * 360;      // 初始的随机基础色调
+        const BASIC_RADIUS = 0.8;                   // 初始半径
+        const MAX_RADIUS = 10;                       // 限制圆的最大半径，达到即消失
+
+        const roundItems = [];                      // 存放所有圆点
+        // 监听鼠标移动产生圆
+        window.onmousemove = event => {
+            roundItems.push({
+                x: event.clientX,
+                y: event.clientY,
+                radius: BASIC_RADIUS,
+            });
+        }
+
+        /* 3. 动画 */
+        let nowHue = BASIC_HUE;
+        const animate = () => {
+            canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+
+            nowHue += 0.1;      // 设置颜色渐变
+            const nowColor = `hsl(${nowHue}, 100%, 80%)`;
+
+            for(let i = 0; i < roundItems.length; i ++) {
+                // 画圆
+                canvasCtx.beginPath();
+                canvasCtx.arc(roundItems[i].x, roundItems[i].y, roundItems[i].radius, 0, Math.PI * 2);
+                canvasCtx.closePath();
+                canvasCtx.fillStyle = nowColor;
+                canvasCtx.fill();
+
+                // 计算下次圆的半径
+                roundItems[i].radius += BASIC_RADIUS;
+                if(roundItems[i].radius > MAX_RADIUS) {
+                    roundItems.splice(i, 1);
+                    i --;
+                }
+            }
+            window.requestAnimationFrame(animate);      // 递归执行
+        };
+
+        animate();
+    </script>
+</body>
+</html>
