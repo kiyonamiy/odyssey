@@ -1,0 +1,26 @@
+[
+    [
+        {
+            "tag": "sleep",
+            "time": "09:00",
+            "thing": "睡觉"
+        },
+        {
+            "tag": "study",
+            "time": "12:00",
+            "thing": "学习",
+            "detail": "你不知道的JS上 50%"
+        },
+        {
+            "tag": "sleep",
+            "time": "14:00",
+            "thing": "午睡"
+        },
+        {
+            "tag": "entertainment",
+            "time": "24:00",
+            "thing": "LOL",
+            "detail": "和霍金一起玩"
+        }
+    ]
+]

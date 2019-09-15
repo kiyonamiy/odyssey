@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height">
+    <title>多层饼图</title>
+    <style>::-webkit-scrollbar{display:none;}html,body{overflow:hidden;height:100%;margin:0;}</style>
+</head>
+<body>
+<div id="mountNode"></div>
+<script>/*Fixing iframe window.innerHeight 0 issue in Safari*/document.body.clientHeight;</script>
+<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g2-3.5.1/dist/g2.min.js"></script>
+<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.10.1/dist/data-set.min.js"></script>
+<script>
+  var _DataSet = DataSet,
+    DataView = _DataSet.DataView;
+
+  var data = [{
+    value: 251,
+    type: '大事例一',
+    name: '子事例一'
+  }, {
+    value: 1048,
+    type: '大事例一',
+    name: '子事例二'
+  }, {
+    value: 610,
+    type: '大事例二',
+    name: '子事例三'
+  }, {
+    value: 434,
+    type: '大事例二',
+    name: '子事例四'
+  }, {
+    value: 335,
+    type: '大事例三',
+    name: '子事例五'
+  }, {
+    value: 250,
+    type: '大事例三',
+    name: '子事例六'
+  }, {
+    value: 335,
+    type: '大事例三',
+    name: 'KKKKKK'
+  }, {
+    value: 335,
+    type: '大事例三',
+    name: 'dddddd'
+  }];
+  // 通过 DataSet 计算百分比
+  var dv = new DataView();
+  dv.source(data).transform({
+    type: 'percent',
+    field: 'value',
+    dimension: 'type',
+    as: 'percent'
+  });
+  var chart = new G2.Chart({
+    container: 'mountNode',
+    forceFit: true,
+    height: window.innerHeight,
+    padding: 0
+  });
+  chart.source(dv, {
+    percent: {
+      formatter: function formatter(val) {
+        val = (val * 100).toFixed(2) + '%';
+        return val;
+      }
+    }
+  });
+  chart.coord('theta', {
+    radius: 0.5
+  });
+  chart.tooltip({
+    showTitle: false
+  });
+  chart.legend(false);
+  chart.intervalStack().position('percent').color('type').label('type', {
+    offset: -10
+  }).tooltip('name*percent', function(item, percent) {
+    percent = (percent * 100).toFixed(2) + '%';
+    return {
+      name: item,
+      value: percent
+    };
+  }).select(false).style({
+    lineWidth: 1,
+    stroke: '#fff'
+  });
+
+  var outterView = chart.view();
+  var dv1 = new DataView();
+  dv1.source(data).transform({
+    type: 'percent',
+    field: 'value',
+    dimension: 'name',
+    as: 'percent'
+  });
+  outterView.source(dv1, {
+    percent: {
+      formatter: function formatter(val) {
+        val = (val * 100).toFixed(2) + '%';
+        return val;
+      }
+    }
+  });
+  outterView.coord('theta', {
+    innerRadius: 0.5 / 0.75,
+    radius: 0.75
+  });
+  outterView.intervalStack().position('percent').color('name', ['#BAE7FF', '#7FC9FE', '#71E3E3', '#ABF5F5', '#8EE0A1', '#BAF5C4']).label('name').tooltip('name*percent', function(item, percent) {
+    percent = (percent * 100).toFixed(2) + '%';
+    return {
+      name: item,
+      value: percent
+    };
+  }).select(false).style({
+    lineWidth: 1,
+    stroke: '#fff'
+  });
+
+  chart.render();
+</script>
+</body>
+</html>
