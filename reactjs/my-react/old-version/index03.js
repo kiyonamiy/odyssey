@@ -26,6 +26,7 @@ function reconcile(parentDom, instance, element) {
         instance.element = element;
         return instance;
     } else {
+        // 只要类型不一样，全部替换
         const newInstance = instantiate(element);
         parentDom.replaceChild(newInstance.dom, instance.dom);
         return newInstance;
@@ -94,3 +95,8 @@ function reconcileChildren(instance, element) {
 
     return newChildInstances.filter(instance => instance != null);
 }
+
+// problems {!!!}
+// Every change triggers the reconciliation on the full virtual DOM tree
+// State is global
+// We need to explicitly call the render function after changes to the state
