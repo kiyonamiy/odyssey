@@ -1,0 +1,9 @@
+/*铺满屏幕*/
+body {
+    padding: 0;
+    margin: 0;
+}
+
+#canvas {
+    background: green;
+}
