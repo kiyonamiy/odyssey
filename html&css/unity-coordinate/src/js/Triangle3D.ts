@@ -33,6 +33,7 @@ class Triangle3D {
             canvasCtx.lineTo(point[0], point[1]);
         }
         canvasCtx.strokeStyle = "#fff";
+        canvasCtx.lineWidth = 10;
         canvasCtx.stroke();
     }
 
