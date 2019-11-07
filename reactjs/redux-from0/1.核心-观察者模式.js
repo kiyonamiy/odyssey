@@ -1,28 +1,24 @@
-// const state = {
-//     count: 1,
-// }
-
-// state.count = 2;
-
-
+/*------ count 的发布订阅者实践 ------*/
 const state = {
     count: 1
 }
 const listeners = [];
 
-/* 订阅 */
+// 订阅
 function subscribe(listener) {
     listeners.push(listener);
 }
-/* change count */
+
+// 改变时，遍历通知
 function changeCount(count) {
     state.count = count;
     for(let i = 0; i < listeners.length; i ++) {
-        const listener =  listeners[i];
+        const listener = listeners[i];
         listener();
     }
 }
 
+// 测试：注册两个订阅者
 subscribe(() => {
     console.log(state.count);
 })
