@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MultiTouchGesture</title>
+    <style type="text/css">
+        /*铺满屏幕*/
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        #canvas {
+            /* position: absolute; */
+            top: 0;
+            left: 0;
+            background:rgba(255,255,255,0);/*关键点*/
+            z-index: 999;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <input value="hahah">
+    <button> button </button>
+    <script>
+!function(e){var t={};function n(r){if(t[r])return t[r].exports;var o=t[r]={i:r,l:!1,exports:{}};return e[r].call(o.exports,o,o.exports,n),o.l=!0,o.exports}n.m=e,n.c=t,n.d=function(e,t,r){n.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},n.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},n.t=function(e,t){if(1&t&&(e=n(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var o in e)n.d(r,o,function(t){return e[t]}.bind(null,o));return r},n.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return n.d(t,"a",t),t},n.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},n.p="",n(n.s=0)}([function(e,t,n){"use strict";n.r(t);var r=360*Math.random(),o=.5,l=10,u=[];var a,i=document.documentElement.clientWidth,c=document.documentElement.clientHeight,s=[],f=null;function d(e){if(e.preventDefault(),null!=f)for(var t=e.changedTouches,n=0;n<t.length;n++)s.push(t[n]),f.beginPath(),f.arc(t[n].pageX,t[n].pageY,4,0,2*Math.PI,!1),f.fillStyle="#777",f.fill();else console.error("Please check if Canvas Context exists")}function h(e){if(e.preventDefault(),null!=f)for(var t,n=e.changedTouches,r=0;r<n.length;r++)t=n[r],u.push({x:t.clientX,y:t.clientY,radius:o});else console.error("Please check if Canvas Context exists")}null!=(a=document.getElementById("canvas"))?(f=a.getContext("2d"),a.addEventListener("touchstart",d,!1),a.addEventListener("touchmove",h,!1)):console.error("Please check if Canvas element exists"),function(e,t,n){var a=r,i=function(){e.clearRect(0,0,t,n);for(var r="hsl("+(a+=.1)+", 100%, 80%)",c=0;c<u.length;c++)e.beginPath(),e.arc(u[c].x,u[c].y,u[c].radius,0,2*Math.PI),e.closePath(),e.fillStyle=r,e.fill(),u[c].radius+=o,u[c].radius>l&&(u.splice(c,1),c--);window.requestAnimationFrame(i)};i()}(f,i,c)}]);
+    </script>
+</body>
+</html>
