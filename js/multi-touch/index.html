@@ -28,7 +28,7 @@
         
         // touchstart
         function handleStart(evt) {
-            evt.preventDEfault();
+            evt.preventDefault();
             console.log("触摸开始。");
 
             const el = document.getElementById("canvas");
@@ -52,16 +52,16 @@
         // touchmove
         function handleMove(evt) {
             evt.preventDefault();
-            const el = document.getElementsByTagName("canvas")[0];
+            const el = document.getElementById("canvas");
             const ctx = el.getContext("2d");
             const touches = evt.changedTouches;
 
-            for (let i = 0; i < touches.length; i++) {
+            for(let i = 0; i < touches.length; i ++) {
                 const color = colorForTouch(touches[i]);
-                const idx = ongoingTouchIndexById(touches[i].identifier);
+                const idx = ongoingTouchIndexById(touches[i].identifier);       // 取得每个触摸点之前位置的坐标
 
-                if (idx >= 0) {
-                    log("继续第 " + idx + "个触摸。");
+                if(idx >= 0) {
+                    log("继续第 " + idx + " 个触摸。");
                     ctx.beginPath();
                     log("ctx.moveTo(" + ongoingTouches[idx].pageX + ", " + ongoingTouches[idx].pageY + ");");
                     ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
@@ -78,6 +78,83 @@
                 }
             }
         }
+
+        // touchend
+        function handleEnd(evt) {
+        evt.preventDefault();
+            log("触摸结束。");
+            const el = document.getElementsByTagName("canvas")[0];
+            const ctx = el.getContext("2d");
+            touches = evt.changedTouches;
+
+            for (let i = 0; i < touches.length; i++) {
+                const color = colorForTouch(touches[i]);
+                const idx = ongoingTouchIndexById(touches[i].identifier);
+
+                if (idx >= 0) {
+                    ctx.lineWidth = 4;
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
+                    ctx.lineTo(touches[i].pageX, touches[i].pageY);
+                    ctx.fillRect(touches[i].pageX - 4, touches[i].pageY - 4, 8, 8);
+                    // 在终点画一个正方形
+                    ongoingTouches.splice(idx, 1); // 用完后移除
+                } else {
+                    log("无法确定要结束哪个触摸点。");
+                }
+            }
+        }
+        
+        function handleCancel(evt) {
+            evt.preventDefault();
+            console.log("触摸取消。");
+            const touches = evt.changedTouches;
+
+            for (let i = 0; i < touches.length; i++) {
+                const idx = ongoingTouchIndexById(touches[i].identifier);
+                ongoingTouches.splice(idx, 1); // 用完后移除
+            }
+        }
+
+        function colorForTouch(touch) {
+            let r = touch.identifier % 16;
+            let g = Math.floor(touch.identifier / 3) % 16;
+            let b = Math.floor(touch.identifier / 7) % 16;
+            r = r.toString(16);
+            g = g.toString(16);
+            b = b.toString(16);
+            const color = "#" + r + g + b;
+            log("identifier " + touch.identifier + " 触摸的颜色为：" + color);
+            return color;
+        }
+
+        function copyTouch(touch) {
+            return {
+                identifier: touch.identifier,
+                pageX: touch.pageX,
+                pageY: touch.pageY
+            };
+        }
+
+        // 遍历寻找与给定标记相匹配的触摸点，返回该触摸点在数组中的下标
+        function ongoingTouchIndexById(idToFind) {
+            for (let i = 0; i < ongoingTouches.length; i++) {
+                const id = ongoingTouches[i].identifier;
+                if (id == idToFind) {
+                    return i;
+                }
+            }
+            return -1;    // 未找到
+        }
+
+        // 显示后台操作记录
+        function log(msg) {
+            const p = document.getElementById('log');
+            p.innerHTML = msg + "\n" + p.innerHTML;
+        }
     </script>
 </body>
 </html>
+
+ 
