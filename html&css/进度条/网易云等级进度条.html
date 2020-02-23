@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .sub {
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            padding-top: 31px;
+            height: 34px;
+            overflow: hidden;
+        }
+        .sub .subbg {
+            width: 835px;
+            height: 10px;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            z-index: 2;
+            border-radius: 10px;
+            background: #dcdfe6;
+        }
+        .sub .subbg span {
+            /*一条渐变线*/
+            background: url(https://s2.music.126.net/style/web2/img/mylevelbar.png?c82063aa91487f4e2ba9838c1725ae8f) 0 0 repeat-y;
+            width: 100%;
+            height: 10px;
+            display: block;
+            border-radius: 10px;
+            -webkit-animation: subbar 2s;
+            animation: subbar 2s;
+        }
+        .sub .subnum {
+            width: 100%;
+            height: 40px;
+            left: 0;
+            bottom: 0;
+            position: absolute;
+            z-index: 2;
+        }
+        .divison {
+            position: absolute;
+            left: 13px;
+            bottom: 0;
+            width: 100%;
+            height: 10px;
+        }
+        .divison span {
+            float: left;
+            display: inline;
+            width: 1px;
+            background: #fff;
+            height: 10px;
+            margin-left: 80px;
+        }
+        .divnum {
+            position: absolute;
+            left: -40px;
+            top: -20px;
+            font-family: 'Microsoft YaHei';
+            font-size: 18px;
+            color: #c4c6cc;
+            width: 980px;
+        }
+        .divnum li.z-ov {
+            color: #ed5757;
+            -webkit-animation: show 3s;
+            animation: show 3s;
+        }
+        .divnum li {
+            float: left;
+            width: 25px;
+            height: 28px;
+            line-height: 24px;
+            display: inline;
+            margin-right: 56px;
+            text-align: center;
+        }
+        li {list-style: none;}
+        .divnum li.z-on {
+            color: #fff;
+            -webkit-animation: show1 2s;
+            animation: show1 2s;
+            background-position: 0 -50px;
+        }
+        .h3 em,
+        .divnum li.z-on,
+        .n-pow .telist li,
+        .n-level i,
+        .n-level-big i {
+            /*此处的 0 -50px 和官网上的 0 9999px 有差异*/
+            background: url(https://s2.music.126.net/style/web2/img/mylevel.png?e430950a89eb0de778888fea801af499) no-repeat 0 -50px;
+        }
+        /*动画效果*/
+        @keyframes subbar {
+            0% {
+                width: 0;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+        @keyframes show {
+            0% {
+                color: #c4c6cc;
+            }
+            100% {
+                color: #ed5757;
+            }
+        }
+        @keyframes show1 {
+            0% {
+                color: #c4c6cc;
+                background-position: 9999px 9999px;
+            }
+            50% {
+                color: #c4c6cc;
+                background-position: 0 -50px;
+            }
+            100% {
+                color: #fff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 网易云音乐web版进度条 -->
+    <div class="sub">
+        <div class="subbg">
+            <!-- 通过js控制div的宽度实现进度条的进度，用动画控制前进效果 -->
+            <div style="width:820.8666666666667px;"><span></span></div>
+            <!-- /宽度为25+81x等级x70% -->
+        </div>
+        <div class="subnum">
+            <div class="divison"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="divnum">
+                <ul>
+                    <li class="z-ov">0</li>
+                    <li class="z-ov">1</li>
+                    <li class="z-ov">2</li>
+                    <li class="z-ov">3</li>
+                    <li class="z-ov">4</li>
+                    <li class="z-ov">5</li>
+                    <li class="z-ov">6</li>
+                    <li class="z-ov">7</li>
+                    <li class="z-ov">8</li>
+                    <li class="z-on">9</li>
+                    <li class="">10</li>
+                </ul>
+            </div>
+            <!-- / .ov已过等级样式 .on达到等级样式 -->
+        </div>
+    </div>
+    
+</body>
+</html>
