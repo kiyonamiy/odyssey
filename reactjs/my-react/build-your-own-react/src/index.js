@@ -92,18 +92,35 @@ function commitWork(fiber) {
   if (!fiber) {
     return;
   }
-
-  const domParent = fiber.parent.dom;
+  // 当 fiber 是函数组件时节点不存在 DOM，
+  // 故需要遍历父节点以找到最近的有 DOM 的节点
+  let domParentFiber = fiber.parent;
+  while (!domParentFiber.dom) {
+    domParentFiber = domParentFiber.parent;
+  }
+  const domParent = domParentFiber.dom;
   if (fiber.effectTag === "PLACEMENT" && fiber.dom != null) {
     domParent.appendChild(fiber.dom); // 前一版本只有新增
   } else if (fiber.effectTag === "UPDATE" && fiber.dom != null) {
     updateDom(fiber.dom, fiber.alternate.props, fiber.props);
   } else if (fiber.effectTag === "DELETION") {
-    domParent.removeChild(fiber.dom);
+    // 直接移除 DOM 替换成 commitDeletion 函数
+    commitDeletion(fiber, domParent);
   }
   // 递归子节点和兄弟节点
   commitWork(fiber.child);
   commitWork(fiber.sibling);
+}
+
+// 新增函数，移除 DOM 节点
+function commitDeletion(fiber, domParent) {
+  // 当 child 是函数组件时不存在 DOM，
+  // 故需要递归遍历子节点找到真正的 DOM
+  if (fiber.dom) {
+    domParent.removeChild(fiber.dom);
+  } else {
+    commitDeletion(fiber.child, domParent);
+  }
 }
 
 function render(element, container) {
@@ -116,41 +133,37 @@ function render(element, container) {
     alternate: currentRoot
   };
   deletions = [];
-  nextUnitofWork = wipRoot; // 因为赋值了 nextUnitofWork ，requestIdleWork 一直在等待，启动 workLoop 。
+  nextUnitOfWork = wipRoot; // 因为赋值了 nextUnitOfWork ，requestIdleWork 一直在等待，启动 workLoop 。
 }
 
-let nextUnitofWork = null;
+let nextUnitOfWork = null;
 let currentRoot = null;
 let wipRoot = null; // 新增变量，跟踪渲染进行中的根 fiber
 let deletions = null;
 
 function workLoop(deadline) {
   let shouldYield = false;
-  while (nextUnitofWork && !shouldYield) {
-    nextUnitofWork = performUnitOfWork(nextUnitofWork);
+  while (nextUnitOfWork && !shouldYield) {
+    nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
     shouldYield = deadline.timeRemaining() < 1; // 剩余时间小于1的时候退出循环，放入 requestIdleCallback(workLoop)，以后执行
   }
   // 当 nextUnitOfWork 为空则表示渲染 fiber 树完成了，
   // 可以提交到 DOM 了
-  if (!nextUnitofWork && wipRoot) {
+  if (!nextUnitOfWork && wipRoot) {
     commitRoot();
   }
   requestIdleCallback(workLoop);
 }
-// 一旦浏览器空闲，就触发执行单元任务
+// ***!!!一旦浏览器空闲，就触发执行单元任务
 requestIdleCallback(workLoop);
 
 function performUnitOfWork(fiber) {
-  //add dom node
-  if (!fiber.dom) {
-    fiber.dom = createDom(fiber);
+  const isFunctionComponent = fiber.type instanceof Function;
+  if (isFunctionComponent) {
+    updateFunctionComponent(fiber);
+  } else {
+    updateHostComponent(fiber);
   }
-  // if (fiber.parent) {
-  //   fiber.parent.dom.appendChild(fiber.dom);
-  // }
-  // create new fibers
-  const elements = fiber.props.children;
-  reconcileChildren(fiber, elements);
 
   // return next unit of work
   if (fiber.child) {
@@ -164,6 +177,69 @@ function performUnitOfWork(fiber) {
     // nextFiber = undefined;
     nextFiber = nextFiber.parent; // TODO 为什么要不断向上找，向上找的时候，这些父节点fiber早就被执行过了，而且也没发什么什么呀 我觉得可以 nextFiber = null 结束循环。
   }
+}
+
+let wipFiber = null;
+let hookIndex = null;
+
+// 处理函数组件
+function updateFunctionComponent(fiber) {
+  wipFiber = fiber;
+  hookIndex = 0;
+  wipFiber.hooks = []; // 为每个 fiber 都增加了 hooks 数组  // 新增 hooks 数组以支持同一个组件多次调用 `useState`
+  // 执行函数组件得到 children
+  // 执行function函数，得到 Elements，
+  // （如果这个 < Component /> 里面还有函数组件，一样的道理，执行到 performUnitOfWork，都会再这执行拿到*更里面*的Elements，
+  // 因为是一层一层的。
+  // 也因为只是执行了一个函数而已，执行完其他的就被回收了，只留下return出来的Elements，自然是记不住之前函数内的变量的。
+  const children = [fiber.type(fiber.props)];
+  reconcileChildren(fiber, children);
+}
+
+function useState(initial) {
+  // 新增 hooks 数组以支持同一个组件多次调用 `useState`
+  const oldHook =
+    wipFiber.alternate &&
+    wipFiber.alternate.hooks &&
+    wipFiber.alternate.hooks[hookIndex];
+  const hook = {
+    // 第一次渲染使用入参，第二次渲染复用前一次的状态
+    state: oldHook ? oldHook.state : initial,
+    // 保存每次 setState 入参的队列
+    queue: []
+  };
+
+  const actions = oldHook ? oldHook.queue : [];
+  actions.forEach(action => {
+    hook.state = action instanceof Function ? action(hook.state) : action;
+  });
+
+  // setState 函数用于更新 state，入参 action
+  // 是新的 state 值或函数返回新的 state
+  const setState = action => {
+    hook.queue.push(action);
+    wipRoot = {
+      dom: currentRoot.dom,
+      props: currentRoot.props,
+      alternate: currentRoot
+    };
+    nextUnitOfWork = wipRoot;
+    deletions = [];
+  };
+
+  // 保存本次 hook
+  wipFiber.hooks.push(hook);
+  hookIndex++;
+  return [hook.state, setState];
+}
+
+// 处理原生标签组件
+function updateHostComponent(fiber) {
+  //add dom node
+  if (!fiber.dom) {
+    fiber.dom = createDom(fiber);
+  }
+  reconcileChildren(fiber, fiber.props.children);
 }
 
 function reconcileChildren(wipFiber, elements) {
@@ -229,25 +305,33 @@ function reconcileChildren(wipFiber, elements) {
 }
 
 const Didact = {
+  useState,
   createElement,
   render
 };
 
 /** @jsx Didact.createElement */
-const container = document.getElementById("root");
+function Counter() {
+  const [count1, setCount1] = Didact.useState(0); // 当重新渲染的时候，执行到这里！会遍历 hook.actionQueue，全部执行！！！hook.state = action；所以会覆盖！！！
+  const [count2, setCount2] = Didact.useState(0);
 
-const updateValue = e => {
-  rerender(e.target.value);
-};
-
-const rerender = value => {
-  const element = (
+  return (
     <div>
-      <input onInput={updateValue} value={value} />
-      <h2>Hello {value}</h2>
+      <h1
+        onClick={() => {
+          // 当这么写的时候，浏览器会按顺序执行，虽然会进去setState中，生成新的nextUnitOfWork，但是！！！浏览器并不空闲！！！!!!所以并不会重新渲染，而是执行完这个函数()=>{set,set,set}才会空闲！！！
+          // 只会将其放入队列！！！hook.actionQueue 中，queue.push(1, 2, 3)，并没有执行！！！
+          setCount1(1);
+          setCount1(2);
+          setCount1(3);
+        }}
+      >
+        Count: {count1}
+      </h1>
+      <h2 onClick={() => setCount2(c => c + 1)}>Count: {count2}</h2>
     </div>
   );
-  Didact.render(element, container);
-};
-
-rerender("World");
+}
+const element = <Counter />;
+const container = document.getElementById("root");
+Didact.render(element, container);
