@@ -61,3 +61,28 @@ const element = (
 
 const container = document.getElementById("root");
 Didact.render(element, container);
+
+//line=readline()
+//print(line)
+// console.log('Hello World!');
+
+// function el(type, props, children) {
+//   const obj = new Object();
+//   obj.type = type;
+//   obj.props = props;
+//   obj.props.chilren = children;
+//   obj.render = function() {
+//     const dom =
+//       typeof this.type === "string"
+//         ? document.createTextNode("")
+//         : document.createElement(this.type);
+//     const childDoms = this.props.children.map(child => child.render());
+//     childDoms.forEach(childDom => {
+//       dom.appendChild(childDom);
+//     });
+//     return dom;
+//   };
+//   return obj;
+// }
+
+// ul.render();
