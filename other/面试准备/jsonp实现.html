@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function personCall(personData) {
+        consoele.log(`${personData.name} is ${personData.age} years old`);
+      }
+
+      function JSONP(request) {
+        const { src, callback } = request; // request: {src: string, callback: function}
+
+        const script = document.createElement("script");
+        script.src = `${src}?callback=${callback.name}`;
+        document.body.appendChild(script);
+      }
+
+      // 发起 JSONP 请求，插入的效果如下一个 script 标签
+      JSONP({
+        src: `localhost: 8001`,
+        callback: personCall
+      });
+    </script>
+
+    <script>
+      // 服务器收到跨域请求，解析参数，拿到 callback 的名字 personCall
+      // 然后进行字符串拼接 `personCall(${JSON.stringify(aPerson)})`，const aPerson = {name: 'kiyonami', age: 18}
+      // 最后只是传回一个字符文件！JSONP将其添加到body末尾！
+      personCall({ name: "kiyonami", age: 18 });
+    </script>
+  </body>
+</html>

@@ -23,3 +23,12 @@ const mergeTrees = function(t1, t2) {
   t1.right = mergeTrees(t1.right, t2.right);
   return t1;
 };
+
+// Greatest Common Divisor
+const gcd = (a, b) => {
+  if (b === 0) {
+    return a;
+  }
+  return gcd(b, a % b);
+};
+// 就是有一种不断向后的感觉，b本来是第二位，拿到第一位，后面又出现了新的一位。

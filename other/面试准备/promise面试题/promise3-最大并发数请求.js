@@ -5,26 +5,31 @@
 // 请写一段代码实现这个需求，要求尽可能快速地将所有图片下载完成。
 
 const urls = [
-  "https://www.kkkk1000.com/images/getImgData/getImgDatadata.jpg",
-  "https://www.kkkk1000.com/images/getImgData/gray.gif",
-  "https://www.kkkk1000.com/images/getImgData/Particle.gif",
-  "https://www.kkkk1000.com/images/getImgData/arithmetic.png",
-  "https://www.kkkk1000.com/images/getImgData/arithmetic2.gif",
-  "https://www.kkkk1000.com/images/getImgData/getImgDataError.jpg",
-  "https://www.kkkk1000.com/images/getImgData/arithmetic.gif",
-  "https://www.kkkk1000.com/images/wxQrCode2.png"
+  "first.jpg",
+  "second.jpg",
+  "third.png",
+  "forth.png",
+  "fifth.jpg",
+  "sixth.png",
+  "seven.gif",
+  "eighth.gif"
 ];
 
 function loadImg(url) {
   return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = function() {
-      console.log(`${url} ok`);
+    // const img = new Image();
+    // img.onload = function() {
+    //   console.log(`${url} ok`);
+    //   resolve();
+    // };
+    // img.onerror = reject;
+    // // 发起请求
+    // img.src = url;
+    const time = Math.random() * 1000;
+    setTimeout(() => {
+      console.log("==请求成功==", url, time);
       resolve();
-    };
-    img.onerror = reject;
-    // 发起请求
-    img.src = url;
+    }, time);
   });
 }
 
@@ -32,14 +37,18 @@ function limitLoad(urls, handler, limit) {
   // 准备好窗口
   const promiseList = [];
   for (let i = 0; i < limit; i++) {
-    promiseList.push(Promise.resolve());
+    promiseList.push(Promise.resolve(i)); // i 为了下面能够统一
   }
 
-  let promise = Promise.resolve(); // 链表移动节点
-  for (let i = 0; i < urls.length; i++) {
+  let promise = Promise.race(promiseList);
+  for (let url of urls) {
     promise = promise.then(index => {
-      if (index == null) {
-      }
+      // 此时的 index 即为完成的下标，替换新的
+      promiseList[index] = handler(url).then(() => index);
+      // console.log(`${index} 窗口请求 ${url}`); // 测试
+      return Promise.race(promiseList); // 持续竞速
     });
   }
 }
+
+limitLoad(urls, loadImg, 4);
