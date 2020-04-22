@@ -1,0 +1,12 @@
+.content-box {
+  width: 100px;
+  height: 50px;
+}
+
+.set-state-1 {
+  background: #ef5350;
+}
+
+.set-state-2 {
+  background: #42a5f5;
+}

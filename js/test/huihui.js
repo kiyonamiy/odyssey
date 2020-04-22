@@ -1,13 +1,16 @@
-Function.prototype.throttle = function(wait) {
-  let timeout = null;
-
-  return function() {
-    if (timeout != null) {
-      return;
-    }
-    timeout = setTimeout(() => {
-      this();
-      timeout = null;
-    }, wait);
-  };
+var obj = {
+  fn: function() {
+    console.log(this);
+    return () => {
+      console.log(this);
+      (function() {
+        console.log(this);
+      })();
+      setTimeout(function() {
+        console.log(this);
+      }, 1);
+    };
+  }
 };
+
+obj.fn()();
